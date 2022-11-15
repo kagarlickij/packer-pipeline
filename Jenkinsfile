@@ -34,7 +34,7 @@ pipeline {
                     AMI_ID=\$(egrep -m1 -oe 'ami-.{17}' build.log)
                     rm -f build.log
                     aws ec2 run-instances \
-                    --image-id $AMI_ID \
+                    --image-id \$AMI_ID \
                     --instance-type "t2.micro" \
                     --subnet-id "subnet-07b02bd4ddfe7a1c2" \
                     --security-group-ids "sg-0eb548430516a7188" \
