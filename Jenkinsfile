@@ -11,7 +11,7 @@ pipeline {
                 echo 'PR'
                 sh """
                     packer init .
-                    packer validate -var 'source_ami=${source_ami}' .
+                    packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                 """
             }
         }
@@ -29,8 +29,8 @@ pipeline {
                 echo 'main'
                 sh """
                     packer init .
-                    packer validate -var 'source_ami=${source_ami}' .
-                    packer build -color=false -var 'source_ami=${source_ami}' .
+                    packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
+                    packer build -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                 """
             }
         }
