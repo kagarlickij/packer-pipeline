@@ -47,6 +47,11 @@ pipeline {
                     sleep 5
                     SWAP_SIZE=\$(aws ssm get-command-invocation --command-id \$CMD_ID --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}')
                     echo "SWAP_SIZE = \$SWAP_SIZE"
+                    if [ \$SWAP_SIZE = "0" ]; then
+                        echo "SWAP was not set"
+                    else
+                        echo "SWAP was set"
+                    fi
                     aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                 """
                 // sh """
