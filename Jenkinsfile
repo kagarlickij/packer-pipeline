@@ -31,6 +31,8 @@ pipeline {
                     packer init .
                     packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                     packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
+                """
+                sh """
                     AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)
                     rm -f build.log
                     INSTANCE_ID=\$(aws ec2 run-instances \
@@ -43,21 +45,21 @@ pipeline {
                     --query 'Instances[0].InstanceId' \
                     --output text)
                     sleep 120
-                    CMD_ID=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free | grep Swap"]' --query "Command.CommandId" --output text)
+                    CMD_ID=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free -m | grep Swap"]' --query "Command.CommandId" --output text)
                     sleep 5
                     SWAP_SIZE=\$(aws ssm get-command-invocation --command-id \$CMD_ID --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}')
                     echo "SWAP_SIZE = \$SWAP_SIZE"
                     if [ \$SWAP_SIZE = "0" ]; then
                         echo "SWAP was not set"
+                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
+                        exit 1
                     else
-                        echo "SWAP was set"
+                        echo "SWAP was set successfully"
+                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                     fi
-                    #aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                 """
                 // sh """
                 //     aws ec2 deregister-image --image-id ${source_ami}
-                // """
-                // sh """
                 // """
             }
         }
