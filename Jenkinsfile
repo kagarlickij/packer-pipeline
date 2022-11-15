@@ -9,10 +9,10 @@ pipeline {
             }
             steps {
                 echo 'PR'
-                sh '''
+                sh """
                     packer init .
                     packer validate -var 'source_ami=${source_ami}' .
-                '''
+                """
             }
         }
         stage('deploy from main') {
@@ -27,11 +27,11 @@ pipeline {
             }
             steps {
                 echo 'main'
-                sh '''
+                sh """
                     packer init .
                     packer validate -var 'source_ami=${source_ami}' .
                     packer build -color=false -var 'source_ami=${source_ami}' .
-                '''
+                """
             }
         }
     }
