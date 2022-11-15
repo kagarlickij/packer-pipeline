@@ -33,14 +33,17 @@ pipeline {
                     packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
                     AMI_ID=\$(egrep -m1 -oe 'ami-.{17}' build.log)
                     rm -f build.log
-                    aws ec2 run-instances \
+                    INSTANCE_ID=\$(aws ec2 run-instances \
                     --image-id \$AMI_ID \
                     --instance-type "t2.micro" \
                     --subnet-id "subnet-07b02bd4ddfe7a1c2" \
                     --security-group-ids "sg-0eb548430516a7188" \
                     --key-name "test-aws10-ohio" \
+                    --iam-instance-profile "Name=AmazonSSMManagedInstanceCore" \
                     --query 'Instances[0].InstanceId' \
-                    --output text
+                    --output text)
+                    CMD_ID=$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free | grep Swap"]' --query "Command.CommandId" --output text)
+                    aws ssm get-command-invocation --command-id \$CMD_ID --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}'
                 """
                 // sh """
                 //     aws ec2 deregister-image --image-id ${source_ami}
