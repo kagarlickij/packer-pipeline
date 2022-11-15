@@ -1,6 +1,11 @@
 pipeline {
     agent { node { label 'master' } }
     stages {
+        stage('debug') {
+            steps {
+                printenv
+            }
+        }
         stage('PR') {
             when {
                 branch 'PR-*'
