@@ -42,6 +42,7 @@ pipeline {
                     --iam-instance-profile "Name=AmazonSSMManagedInstanceCore" \
                     --query 'Instances[0].InstanceId' \
                     --output text)
+                    sleep 30
                     CMD_ID=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free | grep Swap"]' --query "Command.CommandId" --output text)
                     sleep 5
                     SWAP_SIZE=\$(aws ssm get-command-invocation --command-id \$CMD_ID --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}')
