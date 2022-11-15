@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('debug') {
             steps {
-                printenv
+                sh """
+                    printenv
+                """
             }
         }
         stage('PR') {
