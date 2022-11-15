@@ -32,15 +32,15 @@ pipeline {
                     packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                     packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
                     AMI_ID=$(egrep -m1 -oe 'ami-.{17}' build.log)
-                    rm -f build.log
-                    aws ec2 run-instances \
-                    --image-id $AMI_ID \
-                    --instance-type "t2.micro" \
-                    --subnet-id "subnet-07b02bd4ddfe7a1c2" \
-                    --security-group-ids "sg-0eb548430516a7188" \
-                    --key-name "test-aws10-ohio" \
-                    --query 'Instances[0].InstanceId' \
-                    --output text
+                    // rm -f build.log
+                    // aws ec2 run-instances \
+                    // --image-id $AMI_ID \
+                    // --instance-type "t2.micro" \
+                    // --subnet-id "subnet-07b02bd4ddfe7a1c2" \
+                    // --security-group-ids "sg-0eb548430516a7188" \
+                    // --key-name "test-aws10-ohio" \
+                    // --query 'Instances[0].InstanceId' \
+                    // --output text
                 """
                 // sh """
                 //     aws ec2 deregister-image --image-id ${source_ami}
