@@ -18,6 +18,9 @@ pipeline {
                 expression { return env.GIT_BRANCH == 'origin/main'; }
                 expression { return env.ghprbPullId == null; }
             } }
+            // environment {
+            //     AWS_DEFAULT_REGION = "us-east-2"
+            // }
             steps {
                 echo 'main'
                 sh '''
