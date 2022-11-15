@@ -11,7 +11,7 @@ source "amazon-ebs" "ubuntu" {
   ami_name      = "test-packer-linux-aws-2"
   instance_type = "t2.micro"
   region        = "us-east-2"
-  source_ami    = "ami-090f3f18d176e29f7"
+  source_ami    =  "${var.source_ami}"
   ssh_username = "ubuntu"
 }
 

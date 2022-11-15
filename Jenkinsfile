@@ -9,7 +9,7 @@ pipeline {
                 echo 'PR'
                 sh '''
                     packer init .
-                    packer validate .
+                    packer validate -var 'source_ami=ami-090f3f18d176e29f7' .
                 '''
             }
         }
@@ -27,8 +27,8 @@ pipeline {
                 echo 'main'
                 sh '''
                     packer init .
-                    packer validate .
-                    packer build -color=false template.pkr.hcl
+                    packer validate -var 'source_ami=ami-090f3f18d176e29f7' .
+                    packer build -var 'source_ami=ami-090f3f18d176e29f7' .
                 '''
             }
         }
