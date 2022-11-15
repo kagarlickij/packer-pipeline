@@ -1,13 +1,6 @@
 pipeline {
     agent { node { label 'master' } }
     stages {
-        stage('debug') {
-            steps {
-                sh """
-                    printenv
-                """
-            }
-        }
         stage('PR') {
             when {
                 expression { return env.ghprbPullId != null; }
