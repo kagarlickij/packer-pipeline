@@ -31,7 +31,7 @@ pipeline {
                     packer init .
                     packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                     packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
-                    AMI_ID=\$(egrep -m1 -oe 'ami-.{17}' build.log)
+                    AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)
                     rm -f build.log
                     INSTANCE_ID=\$(aws ec2 run-instances \
                     --image-id \$AMI_ID \
