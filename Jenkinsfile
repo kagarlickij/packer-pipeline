@@ -15,7 +15,9 @@ pipeline {
         }
         stage('main') {
             when {
-                branch 'main'
+                expression {
+                    return env.BRANCH_NAME == 'main';
+                }
             }
             steps {
                 echo 'main'
