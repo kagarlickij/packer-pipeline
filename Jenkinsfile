@@ -28,7 +28,7 @@ pipeline {
                 sh '''
                     packer init .
                     packer validate -var 'source_ami=ami-090f3f18d176e29f7' .
-                    packer build -var 'source_ami=ami-090f3f18d176e29f7' .
+                    packer build -color=false -var 'source_ami=ami-090f3f18d176e29f7' .
                 '''
             }
         }
