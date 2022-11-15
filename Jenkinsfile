@@ -1,7 +1,7 @@
 pipeline {
     agent { node { label 'master' } }
     stages {
-        stage('PR') {
+        stage('validate PR') {
             when {
                 expression { return env.ghprbPullId != null; }
             }
@@ -13,7 +13,7 @@ pipeline {
                 '''
             }
         }
-        stage('main') {
+        stage('deploy from main') {
             when { allOf {
                 expression { return env.GIT_BRANCH == 'origin/main'; }
                 expression { return env.ghprbPullId == null; }
