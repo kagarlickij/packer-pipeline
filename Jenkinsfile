@@ -31,7 +31,7 @@ pipeline {
                 sh '''
                     packer init .
                     packer validate .
-                    packer build template.pkr.hcl -color=false
+                    packer build -color=false template.pkr.hcl
                 '''
             }
         }
