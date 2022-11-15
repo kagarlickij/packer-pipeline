@@ -30,8 +30,8 @@ pipeline {
                 sh """
                     packer init .
                     packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
-                    packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
-                    AMI_ID=$(egrep -m1 -oe 'ami-.{17}' build.log)
+                    // packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
+                    // AMI_ID=$(egrep -m1 -oe 'ami-.{17}' build.log)
                     // rm -f build.log
                     // aws ec2 run-instances \
                     // --image-id $AMI_ID \
