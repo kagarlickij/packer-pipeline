@@ -10,7 +10,7 @@ pipeline {
         }
         stage('PR') {
             when {
-                branch 'PR-*'
+                expression { return env.ghprbPullId != null; }
             }
             steps {
                 echo 'PR'
