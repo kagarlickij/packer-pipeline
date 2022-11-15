@@ -1,3 +1,5 @@
+def source_ami = "ami-090f3f18d176e29f7"
+
 pipeline {
     agent { node { label 'master' } }
     stages {
@@ -9,7 +11,7 @@ pipeline {
                 echo 'PR'
                 sh '''
                     packer init .
-                    packer validate -var 'source_ami=ami-090f3f18d176e29f7' .
+                    packer validate -var 'source_ami=${source_ami}' .
                 '''
             }
         }
@@ -27,8 +29,8 @@ pipeline {
                 echo 'main'
                 sh '''
                     packer init .
-                    packer validate -var 'source_ami=ami-090f3f18d176e29f7' .
-                    packer build -color=false -var 'source_ami=ami-090f3f18d176e29f7' .
+                    packer validate -var 'source_ami=${source_ami}' .
+                    packer build -color=false -var 'source_ami=${source_ami}' .
                 '''
             }
         }
