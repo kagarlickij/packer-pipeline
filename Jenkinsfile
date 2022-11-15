@@ -21,11 +21,10 @@ pipeline {
             }
         }
         stage('main') {
-            when {
-                expression {
-                    return env.GIT_BRANCH == 'origin/main';
-                }
-            }
+            when { allOf {
+                expression { return env.GIT_BRANCH == 'origin/main'; }
+                expression { return env.ghprbPullId == null; }
+            } }
             steps {
                 echo 'main'
                 sh '''
