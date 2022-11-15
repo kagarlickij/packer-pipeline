@@ -14,16 +14,16 @@ pipeline {
             }
         }
         stage('main') {
-            when {
-                branch 'main'
-            }
             steps {
-                echo 'main'
-                sh '''
-                    packer init .
-                    packer validate .
-                    packer build template.pkr.hcl
-                '''
+                if (env.BRANCH_NAME == 'main') {
+                    echo 'main'
+                    sh '''
+                        packer init .
+                        packer validate .
+                        packer build template.pkr.hcl
+                    '''
+                }
+
             }
         }
     }
