@@ -32,9 +32,9 @@ pipeline {
                     packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                     packer build -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                 """
-                sh """
-                    aws ec2 deregister-image --image-id ${source_ami}
-                """
+                // sh """
+                //     aws ec2 deregister-image --image-id ${source_ami}
+                // """
             }
         }
     }
