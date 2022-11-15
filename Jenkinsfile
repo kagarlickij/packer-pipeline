@@ -31,11 +31,6 @@ pipeline {
                     packer init .
                     packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
                     packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
-                """
-                // sh """
-                //     aws ec2 deregister-image --image-id ${source_ami}
-                // """
-                sh """
                     AMI_ID=$(egrep -m1 -oe 'ami-.{17}' build.log)
                     rm -f build.log
                     aws ec2 run-instances \
@@ -47,6 +42,11 @@ pipeline {
                     --query 'Instances[0].InstanceId' \
                     --output text
                 """
+                // sh """
+                //     aws ec2 deregister-image --image-id ${source_ami}
+                // """
+                // sh """
+                // """
             }
         }
     }
