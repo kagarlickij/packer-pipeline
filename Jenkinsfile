@@ -42,7 +42,6 @@ pipeline {
                     --iam-instance-profile "Name=AmazonSSMManagedInstanceCore" \
                     --query 'Instances[0].InstanceId' \
                     --output text)
-                    CMD_ID=$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free | grep Swap"]' --query "Command.CommandId" --output text)
                 """
                 // sh """
                 //     aws ec2 deregister-image --image-id ${source_ami}
