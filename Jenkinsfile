@@ -21,17 +21,16 @@ pipeline {
             }
         }
         stage('main') {
-            when {
-                expression {
-                    return env.GIT_BRANCH == 'origin/main';
-                }
-            }
+            when { allOf {
+                expression { return env.GIT_BRANCH == 'origin/main'; }
+                expression { return env.ghprbPullId == null; }
+            } }
             steps {
                 echo 'main'
                 sh '''
                     packer init .
                     packer validate .
-                    packer build template.pkr.hcl -color=false
+                    packer build -color=false template.pkr.hcl
                 '''
             }
         }
