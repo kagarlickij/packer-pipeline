@@ -21,15 +21,21 @@ build {
     "source.amazon-ebs.ubuntu"
   ]
 
-  provisioner "shell" {
-    inline = [
-      "cd /",
-      "sudo dd if=/dev/zero of=/swapfile count=1024 bs=1MiB",
-      "sudo chmod 600 /swapfile",
-      "sudo mkswap /swapfile",
-      "sudo swapon /swapfile",
-      "echo '/swapfile   swap    swap    sw  0   0' | sudo tee -a /etc/fstab",
-      "free -m",
-    ]
+  # provisioner "shell" {
+  #   inline = [
+  #     "cd /",
+  #     "sudo dd if=/dev/zero of=/swapfile count=1024 bs=1MiB",
+  #     "sudo chmod 600 /swapfile",
+  #     "sudo mkswap /swapfile",
+  #     "sudo swapon /swapfile",
+  #     "echo '/swapfile   swap    swap    sw  0   0' | sudo tee -a /etc/fstab",
+  #     "free -m",
+  #   ]
+  # }
+
+  provisioner "chef-solo" {
+    cookbook_paths = ["."]
+    run_list = ["swap_cookbook"]
   }
+
 }
