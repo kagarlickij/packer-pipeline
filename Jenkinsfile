@@ -9,9 +9,16 @@ pipeline {
             }
             steps {
                 echo 'PR'
+                script {
+                    env.IMG_VERSION = sh (
+                        script: 'head -n 1 changelog.md',
+                        returnStdout: true
+                    ).trim()
+                    echo "[DEBUG] IMG_VERSION is: ${IMG_VERSION}"
+                }
                 sh """
                     packer init .
-                    packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
+                    packer validate -var 'source_ami=${source_ami}' -var 'version=${IMG_VERSION}' .
                 """
             }
         }
@@ -27,10 +34,17 @@ pipeline {
             // }
             steps {
                 echo 'main'
+                script {
+                    env.IMG_VERSION = sh (
+                        script: 'head -n 1 changelog.md',
+                        returnStdout: true
+                    ).trim()
+                    echo "[DEBUG] IMG_VERSION is: ${IMG_VERSION}"
+                }
                 sh """
                     packer init .
-                    packer validate -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' .
-                    packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${BUILD_NUMBER}' . | tee build.log
+                    packer validate -var 'source_ami=${source_ami}' -var 'version=${IMG_VERSION}' .
+                    packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${IMG_VERSION}' . | tee build.log
                 """
                 sh """
                     AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)
