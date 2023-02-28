@@ -20,11 +20,11 @@ pipeline {
                 expression { return env.GIT_BRANCH == 'origin/main'; }
                 expression { return env.ghprbPullId == null; }
             } }
-            environment {
-                AWS_DEFAULT_REGION = "us-east-2"
-                AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-                AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-            }
+            // environment {
+            //     AWS_DEFAULT_REGION = "us-east-2"
+            //     AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+            //     AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+            // }
             steps {
                 echo 'main'
                 sh """
