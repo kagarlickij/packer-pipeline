@@ -42,7 +42,7 @@ pipeline {
                     echo "[DEBUG] IMG_VERSION is: ${IMG_VERSION}"
                 }
                 script {
-                    env.IMG_NAME = test-packer-linux_v${IMG_VERSION}
+                    env.IMG_NAME="test-packer-linux_v${IMG_VERSION}"
                     echo "[DEBUG] IMG_NAME is: ${IMG_NAME}"
                 }
                 sh """
