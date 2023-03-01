@@ -77,10 +77,10 @@ pipeline {
                     rm -f build.log
                     INSTANCE_ID=\$(aws ec2 run-instances \
                     --image-id \$AMI_ID \
-                    --instance-type \$INSTANCE_TYPE \
-                    --subnet-id \$SUBNET_ID \
-                    --security-group-ids \$SECURITY_GROUP \
-                    --key-name \$KEY_NAME \
+                    --instance-type \${INSTANCE_TYPE} \
+                    --subnet-id \${SUBNET_ID} \
+                    --security-group-ids \${SECURITY_GROUP} \
+                    --key-name \${KEY_NAME} \
                     --iam-instance-profile "Name=AmazonSSMManagedInstanceCore" \
                     --query 'Instances[0].InstanceId' \
                     --output text)
