@@ -15,4 +15,5 @@ TODO:
 1. Get version from text file
 1. Check if AMI name exists before start build
 1. Remove hardcoded vals from test task
+1. Fix PR (built from main branch)
 1. Prettify stages

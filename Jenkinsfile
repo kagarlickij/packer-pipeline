@@ -1,4 +1,8 @@
-def source_ami = "ami-0f53f393debb4c3c0"
+def SOURCE_AMI = "ami-0f53f393debb4c3c0"
+def INSTANCE_TYPE = "t2.micro"
+def SUBNET_ID = "subnet-07b02bd4ddfe7a1c2"
+def SECURITY_GROUP = "sg-0eb548430516a7188"
+def KEY_NAME = "test-aws10-ohio"
 
 pipeline {
     agent { node { label 'master' } }
@@ -29,7 +33,7 @@ pipeline {
                 """
                 sh """
                     packer init .
-                    packer validate -var 'source_ami=${source_ami}' -var 'version=${IMG_NAME}' .
+                    packer validate -var 'source_ami=${SOURCE_AMI}' -var 'version=${IMG_NAME}' .
                 """
             }
         }
@@ -65,18 +69,18 @@ pipeline {
                 """
                 sh """
                     packer init .
-                    packer validate -var 'source_ami=${source_ami}' -var 'img_name=${IMG_NAME}' .
-                    packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'img_name=${IMG_NAME}' . | tee build.log
+                    packer validate -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' .
+                    packer build -machine-readable -color=false -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' . | tee build.log
                 """
                 sh """
                     AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)
                     rm -f build.log
                     INSTANCE_ID=\$(aws ec2 run-instances \
                     --image-id \$AMI_ID \
-                    --instance-type "t2.micro" \
-                    --subnet-id "subnet-07b02bd4ddfe7a1c2" \
-                    --security-group-ids "sg-0eb548430516a7188" \
-                    --key-name "test-aws10-ohio" \
+                    --instance-type \$INSTANCE_TYPE \
+                    --subnet-id \$SUBNET_ID \
+                    --security-group-ids \$SECURITY_GROUP \
+                    --key-name \$KEY_NAME \
                     --iam-instance-profile "Name=AmazonSSMManagedInstanceCore" \
                     --query 'Instances[0].InstanceId' \
                     --output text)
@@ -95,7 +99,7 @@ pipeline {
                     fi
                 """
                 // sh """
-                //     aws ec2 deregister-image --image-id ${source_ami}
+                //     aws ec2 deregister-image --image-id ${SOURCE_AMI}
                 // """
             }
         }
