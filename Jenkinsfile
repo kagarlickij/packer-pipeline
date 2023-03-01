@@ -80,6 +80,5 @@ pipeline {
         //         aws ec2 deregister-image --image-id ${SOURCE_AMI}
         //     """
         // }
-        }
     }
 }
