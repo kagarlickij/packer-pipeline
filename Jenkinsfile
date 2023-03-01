@@ -44,7 +44,7 @@ pipeline {
                     echo "[DEBUG] IMG_NAME is: ${IMG_NAME}"
                 }
                 sh """
-                    EXISTING_IMG_CREATION_DATE=$(aws ec2 describe-images --filters Name=name,Values=${IMG_VERSION} | jq --raw-output '.Images[].CreationDate')
+                    EXISTING_IMG_CREATION_DATE=\$(aws ec2 describe-images --filters Name=name,Values=\$IMG_VERSION | jq --raw-output '.Images[].CreationDate')
                     if [ ! -z "\$EXISTING_IMG_CREATION_DATE" ]; then
                         echo "[ERROR] Image already exists"
                         exit 1
