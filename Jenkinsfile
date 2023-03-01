@@ -7,7 +7,7 @@ def KEY_NAME = "test-aws10-ohio"
 pipeline {
     agent { node { label 'master' } }
     stages {
-        stage('deploy from main') {
+        stage('Get input') {
             when { allOf {
                 expression { return env.GIT_BRANCH == 'origin/main'; }
                 expression { return env.ghprbPullId == null; }
@@ -18,7 +18,6 @@ pipeline {
             //     AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
             // }
             steps {
-                echo 'main'
                 script {
                     env.IMG_VERSION = sh (
                         script: 'head -n 1 changelog.md',
@@ -28,6 +27,8 @@ pipeline {
                     env.IMG_NAME="test-packer-linux_v${IMG_VERSION}"
                     echo "[DEBUG] IMG_NAME is: ${IMG_NAME}"
                 }
+            }
+            stage('Check if image exists') {
                 sh """
                     EXISTING_IMG_CREATION_DATE=\$(aws ec2 describe-images --filters Name=name,Values=\$IMG_NAME | jq --raw-output '.Images[].CreationDate')
                     if [ ! -z "\$EXISTING_IMG_CREATION_DATE" ]; then
@@ -37,11 +38,15 @@ pipeline {
                         echo "[INFO] Image doesn't exist yet"
                     fi
                 """
+            }
+            stage('Build image') {
                 sh """
                     packer init .
                     packer validate -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' .
                     packer build -machine-readable -color=false -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' . | tee build.log
                 """
+            }
+            stage('Test image') {
                 sh """
                     AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)
                     rm -f build.log
@@ -68,10 +73,12 @@ pipeline {
                         aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                     fi
                 """
-                // sh """
-                //     aws ec2 deregister-image --image-id ${SOURCE_AMI}
-                // """
             }
+            // stage('Delete old image') {
+            //     sh """
+            //         aws ec2 deregister-image --image-id ${SOURCE_AMI}
+            //     """
+            // }
         }
     }
 }
