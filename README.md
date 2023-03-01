@@ -13,4 +13,6 @@ TODO:
 1. Test PR build
 1. Try Instance role instead of AWS creds in env var
 1. Get version from text file
+1. Check if AMI name exists before start build
+1. Remove hardcoded vals from test task
 1. Prettify stages

@@ -40,11 +40,13 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     echo "[DEBUG] IMG_VERSION is: ${IMG_VERSION}"
+                    env.IMG_NAME = test-packer-linux_v${IMG_VERSION}
+                    echo "[DEBUG] IMG_NAME is: ${IMG_NAME}"
                 }
                 sh """
                     packer init .
-                    packer validate -var 'source_ami=${source_ami}' -var 'version=${IMG_VERSION}' .
-                    packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'version=${IMG_VERSION}' . | tee build.log
+                    packer validate -var 'source_ami=${source_ami}' -var 'img_name=${IMG_NAME}' .
+                    packer build -machine-readable -color=false -var 'source_ami=${source_ami}' -var 'img_name=${IMG_NAME}' . | tee build.log
                 """
                 sh """
                     AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)

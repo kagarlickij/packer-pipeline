@@ -8,7 +8,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "test-packer-linux_v${var.version}"
+  ami_name      = "test-packer-linux_v${var.img_name}"
   instance_type = "t2.micro"
   region        = "us-east-2"
   source_ami    =  "${var.source_ami}"

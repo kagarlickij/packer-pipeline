@@ -1,2 +1,2 @@
 variable "source_ami" {}
-variable "version" {}
+variable "img_name" {}
