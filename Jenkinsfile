@@ -28,57 +28,58 @@ pipeline {
                     echo "[DEBUG] IMG_NAME is: ${IMG_NAME}"
                 }
             }
-            stage('Check if image exists') {
-                sh """
-                    EXISTING_IMG_CREATION_DATE=\$(aws ec2 describe-images --filters Name=name,Values=\$IMG_NAME | jq --raw-output '.Images[].CreationDate')
-                    if [ ! -z "\$EXISTING_IMG_CREATION_DATE" ]; then
-                        echo "[ERROR] Image already exists"
-                        exit 1
-                    else
-                        echo "[INFO] Image doesn't exist yet"
-                    fi
-                """
-            }
-            stage('Build image') {
-                sh """
-                    packer init .
-                    packer validate -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' .
-                    packer build -machine-readable -color=false -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' . | tee build.log
-                """
-            }
-            stage('Test image') {
-                sh """
-                    AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)
-                    rm -f build.log
-                    INSTANCE_ID=\$(aws ec2 run-instances \
-                    --image-id \$AMI_ID \
-                    --instance-type \'${INSTANCE_TYPE}' \
-                    --subnet-id \'${SUBNET_ID}' \
-                    --security-group-ids \'${SECURITY_GROUP}' \
-                    --key-name \'${KEY_NAME}' \
-                    --iam-instance-profile "Name=AmazonSSMManagedInstanceCore" \
-                    --query 'Instances[0].InstanceId' \
-                    --output text)
-                    sleep 120
-                    CMD_ID=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free -m | grep Swap"]' --query "Command.CommandId" --output text)
-                    sleep 5
-                    SWAP_SIZE=\$(aws ssm get-command-invocation --command-id \$CMD_ID --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}')
-                    echo "SWAP_SIZE = \$SWAP_SIZE"
-                    if [ \$SWAP_SIZE = "0" ]; then
-                        echo "SWAP was not set"
-                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
-                        exit 1
-                    else
-                        echo "SWAP was set successfully"
-                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
-                    fi
-                """
-            }
-            // stage('Delete old image') {
-            //     sh """
-            //         aws ec2 deregister-image --image-id ${SOURCE_AMI}
-            //     """
-            // }
+        }
+        stage('Check if image exists') {
+            sh """
+                EXISTING_IMG_CREATION_DATE=\$(aws ec2 describe-images --filters Name=name,Values=\$IMG_NAME | jq --raw-output '.Images[].CreationDate')
+                if [ ! -z "\$EXISTING_IMG_CREATION_DATE" ]; then
+                    echo "[ERROR] Image already exists"
+                    exit 1
+                else
+                    echo "[INFO] Image doesn't exist yet"
+                fi
+            """
+        }
+        stage('Build image') {
+            sh """
+                packer init .
+                packer validate -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' .
+                packer build -machine-readable -color=false -var 'source_ami=${SOURCE_AMI}' -var 'img_name=${IMG_NAME}' . | tee build.log
+            """
+        }
+        stage('Test image') {
+            sh """
+                AMI_ID=\$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)
+                rm -f build.log
+                INSTANCE_ID=\$(aws ec2 run-instances \
+                --image-id \$AMI_ID \
+                --instance-type \'${INSTANCE_TYPE}' \
+                --subnet-id \'${SUBNET_ID}' \
+                --security-group-ids \'${SECURITY_GROUP}' \
+                --key-name \'${KEY_NAME}' \
+                --iam-instance-profile "Name=AmazonSSMManagedInstanceCore" \
+                --query 'Instances[0].InstanceId' \
+                --output text)
+                sleep 120
+                CMD_ID=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free -m | grep Swap"]' --query "Command.CommandId" --output text)
+                sleep 5
+                SWAP_SIZE=\$(aws ssm get-command-invocation --command-id \$CMD_ID --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}')
+                echo "SWAP_SIZE = \$SWAP_SIZE"
+                if [ \$SWAP_SIZE = "0" ]; then
+                    echo "SWAP was not set"
+                    aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
+                    exit 1
+                else
+                    echo "SWAP was set successfully"
+                    aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
+                fi
+            """
+        }
+        // stage('Delete old image') {
+        //     sh """
+        //         aws ec2 deregister-image --image-id ${SOURCE_AMI}
+        //     """
+        // }
         }
     }
 }
