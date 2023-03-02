@@ -1,3 +1,5 @@
+def SOURCE_AMI = "ami-0f53f393debb4c3c0"
+
 pipeline {
     agent { node { label 'master' } }
     stages {
