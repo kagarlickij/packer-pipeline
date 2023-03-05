@@ -79,6 +79,10 @@ pipeline {
                         aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                     fi
                 """
+                sh """
+                    echo "Checking AWS cli version"
+                    aws --version
+                """
             }
         }
         // stage('Delete old image') {
