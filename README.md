@@ -1,5 +1,5 @@
 # Chef
-docker run -it --mount src="$(pwd)",target=/drop,type=bind chef/chefworkstation:latest /bin/bash  
+docker run -it --mount src="$(pwd)",target=/drop,type=bind kagarlickij/centos7-chef:latest /bin/bash  
 cd /drop  
 chef-solo -c solo.rb -j swap.json  
 

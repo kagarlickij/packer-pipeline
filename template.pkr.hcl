@@ -35,7 +35,10 @@ build {
 
   provisioner "chef-solo" {
     cookbook_paths = ["."]
-    run_list = ["swap_cookbook"]
+    run_list = [
+      "swap_cookbook",
+      "awscli_cookbook"
+    ]
   }
 
 }

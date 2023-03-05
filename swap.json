@@ -1,3 +1,3 @@
 {
-    "run_list": [ "recipe[swap_cookbook]" ]
+    "run_list": [ "recipe[awscli_cookbook]" ]
 }
