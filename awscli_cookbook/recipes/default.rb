@@ -8,5 +8,5 @@ archive_file 'awscli-exe-linux-x86_64.zip' do
 end
 
 execute 'aws/install' do
-    command '/tmp/awscli-exe-linux-x86_64/aws/install'
+    command '/tmp/awscli-exe-linux-x86_64/aws/install --update'
 end
