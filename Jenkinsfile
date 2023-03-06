@@ -72,16 +72,18 @@ pipeline {
                     echo "SWAP_SIZE = \$SWAP_SIZE"
                     if [ \$SWAP_SIZE = "0" ]; then
                         echo "SWAP was not set"
-                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                         exit 1
                     else
                         echo "SWAP was set successfully"
-                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                     fi
                 """
                 sh """
                     echo "Checking AWS cli version"
                     aws --version
+                """
+                sh """
+                    echo "Terminating test instance"
+                    aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                 """
             }
         }
