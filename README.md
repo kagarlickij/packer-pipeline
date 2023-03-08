@@ -7,3 +7,6 @@ chef-solo -c solo.rb -j swap.json
 packer init .  
 packer validate -var 'source_ami=ami-0f53f393debb4c3c0' -var 'version=local' .  
 packer build -var 'source_ami=ami-0f53f393debb4c3c0' -var 'version=local' .  
+
+TODO:
+1. document prerequsites for build env (packer, chef-solo, ??? e.g. jq)
