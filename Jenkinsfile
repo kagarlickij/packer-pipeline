@@ -79,7 +79,7 @@ pipeline {
                         #aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                     fi
                     echo "Checking AWS cli version"
-                    CMD_ID_1=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["aws --version"]' --query "Command.CommandId" --output text)
+                    CMD_ID_1=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["aws22 --version"]' --query "Command.CommandId" --output text)
                     sleep 5
                     AWS_CLI_VERSION=\$(aws ssm get-command-invocation --command-id \$CMD_ID_1 --instance-id \$INSTANCE_ID --query "StandardOutputContent")
                     echo "AWS_CLI_VERSION = \$AWS_CLI_VERSION"
