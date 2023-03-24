@@ -1,4 +1,4 @@
-def SOURCE_AMI = "ami-05d9c760f78e86b20"
+def SOURCE_AMI = "ami-01e1f544a628238ae"
 
 pipeline {
     agent { node { label 'master' } }

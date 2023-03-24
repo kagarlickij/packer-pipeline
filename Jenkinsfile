@@ -1,4 +1,4 @@
-def SOURCE_AMI = "ami-05d9c760f78e86b20" //TODO: switch to CentOS
+def SOURCE_AMI = "ami-01e1f544a628238ae" //TODO: switch to CentOS
 def INSTANCE_TYPE = "t2.micro"
 def SUBNET_ID = "subnet-07b02bd4ddfe7a1c2"
 def SECURITY_GROUP = "sg-0eb548430516a7188"
