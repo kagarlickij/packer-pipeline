@@ -83,6 +83,12 @@ pipeline {
                     sleep 5
                     AWS_CLI_VERSION=\$(aws ssm get-command-invocation --command-id \$CMD_ID_1 --instance-id \$INSTANCE_ID --query "StandardOutputContent")
                     echo "AWS_CLI_VERSION = \$AWS_CLI_VERSION"
+                    if [ -z \$AWS_CLI_VERSION ]; then
+                        echo "AWS cli was not installed"
+                        exit 1
+                    else
+                        echo "AWS cli was installed"
+                    fi
                 """
             }
         }
