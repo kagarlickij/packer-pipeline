@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     env.IMG_VERSION = sh (
-                        script: 'head -n 1 CHANGELOG.md',
+                        script: 'head -n 1 changelog.md',
                         returnStdout: true
                     ).trim()
                     echo "[DEBUG] IMG_VERSION is: ${IMG_VERSION}"
