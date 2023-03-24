@@ -1,4 +1,4 @@
-def SOURCE_AMI = "ami-01e1f544a628238ae" //TODO: switch to CentOS
+def SOURCE_AMI = "ami-01e1f544a628238ae"
 def INSTANCE_TYPE = "t2.micro"
 def SUBNET_ID = "subnet-07b02bd4ddfe7a1c2"
 def SECURITY_GROUP = "sg-0eb548430516a7188"
@@ -66,9 +66,9 @@ pipeline {
                     --query 'Instances[0].InstanceId' \
                     --output text)
                     sleep 120
-                    CMD_ID=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free -m | grep Swap"]' --query "Command.CommandId" --output text)
+                    CMD_ID_1=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["free -m | grep Swap"]' --query "Command.CommandId" --output text)
                     sleep 5
-                    SWAP_SIZE=\$(aws ssm get-command-invocation --command-id \$CMD_ID --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}')
+                    SWAP_SIZE=\$(aws ssm get-command-invocation --command-id \$CMD_ID_1 --instance-id \$INSTANCE_ID --query "StandardOutputContent" | awk '{print \$2}')
                     echo "SWAP_SIZE = \$SWAP_SIZE"
                     if [ \$SWAP_SIZE = "0" ]; then
                         echo "SWAP was not set"
@@ -78,10 +78,12 @@ pipeline {
                         echo "SWAP was set successfully"
                         aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                     fi
+                    echo "Checking AWS cli version"
+                    CMD_ID_1=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["aws --version"]' --query "Command.CommandId" --output text)
+                    sleep 5
+                    AWS_CLI_VERSION=\$(aws ssm get-command-invocation --command-id \$CMD_ID_1 --instance-id \$INSTANCE_ID --query "StandardOutputContent")
+                    echo "AWS_CLI_VERSION = \$AWS_CLI_VERSION"
                 """
-                // sh """
-                //     echo "Checking AWS cli version" TODO: add check for AWS cli
-                // """
             }
         }
         // stage('Delete old image') {
