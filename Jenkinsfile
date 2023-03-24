@@ -72,11 +72,10 @@ pipeline {
                     echo "SWAP_SIZE = \$SWAP_SIZE"
                     if [ \$SWAP_SIZE = "0" ]; then
                         echo "SWAP was not set"
-                        #aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
+                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                         exit 1
                     else
                         echo "SWAP was set successfully"
-                        #aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                     fi
                     echo "Checking AWS cli version"
                     CMD_ID_1=\$(aws ssm send-command --instance-ids \$INSTANCE_ID --document-name "AWS-RunShellScript" --parameters 'commands=["aws22 --version"]' --query "Command.CommandId" --output text)
@@ -85,10 +84,12 @@ pipeline {
                     echo "AWS_CLI_VERSION = \$AWS_CLI_VERSION"
                     if [ -z \$AWS_CLI_VERSION ]; then
                         echo "AWS cli was not installed"
+                        aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                         exit 1
                     else
                         echo "AWS cli was installed"
                     fi
+                    aws ec2 terminate-instances --instance-ids \$INSTANCE_ID
                 """
             }
         }
