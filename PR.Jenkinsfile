@@ -1,4 +1,4 @@
-def SOURCE_AMI = "ami-0f53f393debb4c3c0"
+def SOURCE_AMI = "ami-05d9c760f78e86b20"
 
 pipeline {
     agent { node { label 'master' } }
@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     env.IMG_VERSION = sh (
-                        script: 'head -n 1 changelog.md',
+                        script: 'head -n 1 CHANGELOG.md',
                         returnStdout: true
                     ).trim()
                     echo "[DEBUG] IMG_VERSION is: ${IMG_VERSION}"

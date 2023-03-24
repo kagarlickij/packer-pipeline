@@ -1,4 +1,4 @@
-def SOURCE_AMI = "ami-0f53f393debb4c3c0" //TODO: switch to CentOS
+def SOURCE_AMI = "ami-05d9c760f78e86b20" //TODO: switch to CentOS
 def INSTANCE_TYPE = "t2.micro"
 def SUBNET_ID = "subnet-07b02bd4ddfe7a1c2"
 def SECURITY_GROUP = "sg-0eb548430516a7188"
@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     env.IMG_VERSION = sh (
-                        script: 'head -n 1 changelog.md',
+                        script: 'head -n 1 CHANGELOG.md',
                         returnStdout: true
                     ).trim()
                     echo "[DEBUG] IMG_VERSION is: ${IMG_VERSION}"
