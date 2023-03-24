@@ -7,18 +7,18 @@ packer {
   }
 }
 
-source "amazon-ebs" "ubuntu" {
+source "amazon-ebs" "centos" {
   ami_name      = "${var.img_name}"
   instance_type = "t2.micro"
   region        = "us-east-2"
   source_ami    =  "${var.source_ami}"
-  ssh_username = "ubuntu"
+  ssh_username = "centos"
 }
 
 build {
   name = "test-packer"
   sources = [
-    "source.amazon-ebs.ubuntu"
+    "source.amazon-ebs.centos"
   ]
 
   # provisioner "shell" {
